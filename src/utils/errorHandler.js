@@ -8,7 +8,6 @@ const sendDevelopmentError = async (err, req, res) => {
   const status = err.status || 'error';
   const message = err.message;
   const stack = err.stack;
-  const data = err.data;
   res.status(statusCode).json({ status, message, stack, data });
 };
 

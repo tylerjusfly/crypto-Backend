@@ -1,8 +1,9 @@
+const { hashPassword } = require('../middlewares/password');
 const User = require('../models/user.model');
 
 exports.signupService = async (body) => {
-  const { name, username, email, password, role, wallet } = body;
-  let { phone } = body;
+  const { name, username, email, role, wallet } = body;
+  let { phone, password } = body;
 
   //   check phone field if empty
   if (!phone) phone = '';
@@ -64,8 +65,11 @@ exports.signupService = async (body) => {
     };
   }
 
+  //Overwriting password to hash Password
+  password = await hashPassword(password);
+
   //   Create account
-  const user = await new User({
+  const user = new User({
     name,
     email,
     username,
@@ -75,6 +79,9 @@ exports.signupService = async (body) => {
   });
 
   await user.save();
+
+  //   excludinng password when sending User details
+  user.password = undefined;
 
   return user;
 };
