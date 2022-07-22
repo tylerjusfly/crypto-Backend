@@ -1,5 +1,6 @@
 const logger = require('./logger');
 const config = require('../config/config');
+const AppError = require('./appError');
 
 // Function That Shows Details About The Error Only on The Development Phase
 const sendDevelopmentError = async (err, req, res) => {
@@ -9,6 +10,13 @@ const sendDevelopmentError = async (err, req, res) => {
   const stack = err.stack;
   const data = err.data;
   res.status(statusCode).json({ status, message, stack, data });
+};
+
+// Handle Duplicate error for unique fields in mongoDb
+const handleValidationErrorDB = (err) => {
+  const errors = Object.values(err.errors).map((el) => el.message);
+  const message = `Invalid input data. ${errors.join('. ')}`;
+  return new AppError(message, 400);
 };
 
 const sendProductionError = async (err, req, res) => {
@@ -40,6 +48,8 @@ const ErrorHandler = async (err, req, res, next) => {
   else if (config.env === 'production') {
     let error = { ...err };
     error.message = err.message;
+
+    if (error.code === 11000) error = handleValidationErrorDB(error);
 
     sendProductionError(error, req, res);
   }

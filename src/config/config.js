@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const config = {
-  env: 'production',
+  env: 'development',
   db: {
     url: process.env.url
   }
