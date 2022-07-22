@@ -63,7 +63,8 @@ const userSchema = new mongoose.Schema(
 userSchema.statics.emailAlreadyExists = async function (email) {
   // Find email
   try {
-    const Emailfound = await this.findOne({ email });
+    //lean() will strip the response data of any Mongoose Document data, which reduces the memory our Node.js process uses
+    const Emailfound = await this.findOne({ email }).lean();
 
     return Emailfound ? true : false;
   } catch (error) {
@@ -75,7 +76,7 @@ userSchema.statics.emailAlreadyExists = async function (email) {
 userSchema.statics.usernameAlreadyExists = async function (username) {
   // Find username
   try {
-    const usernamefound = await this.findOne({ username });
+    const usernamefound = await this.findOne({ username }).lean();
 
     return usernamefound ? true : false;
     //
