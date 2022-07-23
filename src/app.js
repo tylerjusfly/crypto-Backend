@@ -1,7 +1,9 @@
 // Packages
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
 const createError = require('http-errors');
+const compression = require('compression');
 const xss = require('xss-clean');
 const logger = require('morgan');
 
@@ -16,6 +18,11 @@ const allRoutes = require('./routes/main');
 
 /* make sure this comes before any routes */
 app.use(xss());
+// for nodejs security
+app.use(helmet());
+
+// compress all responses
+app.use(compression());
 
 // Set Body parser, reading data from body into req.body & Middlewares
 app.use(express.json());
