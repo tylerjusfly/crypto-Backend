@@ -1,8 +1,6 @@
 const { hashPassword } = require('../middlewares/password');
-const { GenerateToken } = require('../middlewares/token');
-const tokenTypes = require('../config/tokenTypes');
+const { AccessToken, EmailVerifyToken } = require('../middlewares/token');
 const User = require('../models/user.model');
-const config = require('../config/config');
 
 exports.signupService = async (body) => {
   const { name, username, email, role, wallet } = body;
@@ -84,11 +82,11 @@ exports.signupService = async (body) => {
   await user.save();
 
   // Generate AccessToken
-  const accessToken = GenerateToken(user.id, tokenTypes.ACCESS, config.secretKey, '5d');
+  const accessToken = await AccessToken(user);
   // Email verification token expires in 5 mins
-  const verificationToken = GenerateToken(user.id, tokenTypes.VERIFY_EMAIL, config.secretKey, 300);
-
+  const verificationToken = await EmailVerifyToken(user);
   //   excludinng password when sending User details
+
   user.password = undefined;
 
   return {
