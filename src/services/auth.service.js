@@ -1,6 +1,7 @@
 const { hashPassword } = require('../middlewares/password');
 const { AccessToken, EmailVerifyToken } = require('../middlewares/token');
 const User = require('../models/user.model');
+const { sendVerificationEmail } = require('../nodemailer/nodemailer');
 
 exports.signupService = async (body) => {
   const { name, username, email, role, wallet } = body;
@@ -85,8 +86,9 @@ exports.signupService = async (body) => {
   const accessToken = await AccessToken(user);
   // Email verification token expires in 5 mins
   const verificationToken = await EmailVerifyToken(user);
+  // Send verification email
+  await sendVerificationEmail(email, verificationToken);
   //   excludinng password when sending User details
-
   user.password = undefined;
 
   return {

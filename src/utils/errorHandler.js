@@ -8,7 +8,7 @@ const sendDevelopmentError = async (err, req, res) => {
   const status = err.status || 'error';
   const message = err.message;
   const stack = err.stack;
-  res.status(statusCode).json({ status, message, stack, data });
+  res.status(statusCode).json({ status, message, stack });
 };
 
 // Handle Duplicate error for unique fields in mongoDb
