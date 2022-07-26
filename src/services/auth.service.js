@@ -1,5 +1,5 @@
-const { hashPassword } = require('../middlewares/password');
-const { AccessToken, EmailVerifyToken } = require('../middlewares/token');
+const { hashPassword, compareHashPassword } = require('../middlewares/password');
+const { AccessToken, EmailVerifyToken, verifyToken } = require('../middlewares/token');
 const User = require('../models/user.model');
 const { sendVerificationEmail } = require('../nodemailer/nodemailer');
 
@@ -95,5 +95,80 @@ exports.signupService = async (body) => {
     type: 'Success',
     user,
     tokens: { accessToken, verificationToken }
+  };
+};
+
+/**
+ * @desc -Signin Service
+ * @param   { String } email - User email address
+ * @param   { String } password - User password
+ */
+exports.SigninService = async (email, password) => {
+  // Check if email and password Exist
+  if (!email || !password) {
+    return {
+      statusCode: 400,
+      message: 'emailPasswordRequired'
+    };
+  }
+
+  // Get user From database
+  const user = await User.findOne({ email });
+
+  //Check if user does not exist
+  if (!user) {
+    return {
+      statusCode: 401,
+      message: 'incorrectEmailOrPassword'
+    };
+  }
+
+  const isMatch = await compareHashPassword(password, user.password);
+
+  if (!isMatch) {
+    return {
+      statusCode: 401,
+      message: 'incorrectEmailOrPassword'
+    };
+  }
+
+  // Generate AccessToken
+  const accessToken = await AccessToken(user);
+
+  //If everything ok, send data
+  return {
+    user,
+    accessToken
+  };
+};
+
+/**
+ *
+ * @param {String} verifyEmailToken
+ * @desc - Verification of email
+ */
+
+exports.verifyEmail = async (verifyEmailToken) => {
+  const userToken = await verifyToken(verifyEmailToken);
+
+  const user = await User.findById(userToken.sub);
+
+  // if user Dont  exist
+  if (!user) {
+    return {
+      type: 'Error',
+      statusCode: 404,
+      message: 'noUserFound'
+    };
+  }
+
+  // else update user status To is verified
+  await User.findByIdAndUpdate(user.id, { isEmailVerified: true });
+
+  // Email verification success
+  return {
+    type: 'Sucess',
+    statusCode: 200,
+    message: 'successfulEmailVerification'
   };
 };

@@ -26,6 +26,25 @@ exports.AccessToken = async (user) => {
 };
 
 /**
+ *
+ * @param {String} token
+ * @returns {Object}
+ */
+exports.verifyToken = async (token) => {
+  const payload = jwt.verify(token, config.secretKey);
+
+  if (!payload) {
+    return {
+      type: 'Error',
+      statusCode: 404,
+      message: 'Token not found.'
+    };
+  }
+
+  return payload;
+};
+
+/**
  * Returns Email Verification Token
  * @param {Object} user
  * @returns
