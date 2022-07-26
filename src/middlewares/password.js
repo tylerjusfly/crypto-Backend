@@ -9,7 +9,7 @@ const saltRounds = 10;
  * @param   { String } password - User password
  */
 exports.hashPassword = async (password) => {
-  logger.info('...hashing password');
+  //logger.info('...hashing password');
   try {
     return await bcrypt.hash(password, saltRounds);
   } catch (error) {
