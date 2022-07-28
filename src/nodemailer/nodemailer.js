@@ -25,7 +25,7 @@ exports.sendVerificationEmail = async (email, token) => {
       subject: 'Verification Email',
       html: `<div> 
       <p> Dear User , </p>
-      <p> To verify your email, click on this link ${link}/${token} </p>
+      <p> To verify your email, click on this link ${link}/verify/${token} </p>
       If you did not create an account, then ignore this email.
       </div>`
     };
@@ -37,13 +37,22 @@ exports.sendVerificationEmail = async (email, token) => {
   }
 };
 
-// const registerMail = {
-//   from: "admin.AnyBuy",
-//   to: email,
-//   subject: "Your Admin Login",
-//   html: `<div>
-//   <p> Congratulations, You have Been Added As An Admin </p>
-//   <p> You can login with your email <h2> ${email}</h2> and Password <h2> ${autoPassword} </h2> </p>
-//   Please do not lose this credentials.
-//   </div>`,
-// };
+exports.sendResetTokenEmail = async (email, token) => {
+  try {
+    const resetMail = {
+      from: 'Crypto-MarketPlace',
+      to: email,
+      subject: 'Password Reset Email',
+      html: `<div>
+      <p> Dear User , </p>
+      <p>You made a request for password reset, Here is your token ${token} </p>
+      </div>
+      `
+    };
+
+    // Sending Mail
+    await transporter.sendMail(resetMail);
+  } catch (error) {
+    throw new AppError(error, 404);
+  }
+};

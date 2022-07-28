@@ -1,3 +1,5 @@
+const { paswordReset } = require('../middlewares/token');
+const { sendResetTokenEmail } = require('../nodemailer/nodemailer');
 const { signupService, SigninService, verifyEmail } = require('../services/auth.service');
 const AppError = require('../utils/appError');
 
@@ -26,8 +28,21 @@ exports.emailVerificationController = async (req, res, next) => {
   const { token } = req.params;
   try {
     const response = await verifyEmail(token);
-    res.send(response);
+    res.status(200).json(response);
   } catch (error) {
     return next(error);
+  }
+};
+
+exports.forgotPasswordController = async (req, res, next) => {
+  const { email } = req.body;
+  try {
+    const resetPassToken = await paswordReset(email);
+
+    await sendResetTokenEmail(email, resetPassToken.tokenId);
+
+    res.status(200).json(resetPassToken);
+  } catch (error) {
+    return next(new AppError(error, 400));
   }
 };
