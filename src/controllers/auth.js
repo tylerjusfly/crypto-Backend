@@ -16,9 +16,12 @@ exports.signupController = async (req, res, next) => {
 exports.signinController = async (req, res, next) => {
   const { email, password } = req.body;
   try {
-    const user = await SigninService(email, password);
+    const { statusCode, message, user } = await SigninService(email, password);
 
-    res.send(user);
+    res.status(statusCode).json({
+      message,
+      user
+    });
   } catch (error) {
     return next(new AppError(error, 400));
   }
@@ -27,8 +30,12 @@ exports.signinController = async (req, res, next) => {
 exports.emailVerificationController = async (req, res, next) => {
   const { token } = req.params;
   try {
-    const response = await verifyEmail(token);
-    res.status(200).json(response);
+    const { type, statusCode, message } = await verifyEmail(token);
+
+    res.status(statusCode).json({
+      type,
+      message
+    });
   } catch (error) {
     return next(error);
   }
@@ -37,11 +44,14 @@ exports.emailVerificationController = async (req, res, next) => {
 exports.forgotPasswordController = async (req, res, next) => {
   const { email } = req.body;
   try {
-    const resetPassToken = await paswordReset(email);
+    const { type, statusCode, message } = await paswordReset(email);
 
-    await sendResetTokenEmail(email, resetPassToken.tokenId);
+    await sendResetTokenEmail(email, message.tokenId);
 
-    res.status(200).json(resetPassToken);
+    res.status(statusCode).json({
+      type,
+      message
+    });
   } catch (error) {
     return next(new AppError(error, 400));
   }

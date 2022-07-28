@@ -92,5 +92,9 @@ exports.paswordReset = async (email) => {
   await saveToken.save();
 
   // and return token if email found
-  return saveToken;
+  return {
+    type: 'Success',
+    statusCode: 200,
+    message: saveToken
+  };
 };

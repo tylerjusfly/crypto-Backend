@@ -108,7 +108,7 @@ exports.SigninService = async (email, password) => {
   if (!email || !password) {
     return {
       statusCode: 400,
-      message: 'emailPasswordRequired'
+      message: 'email Or PasswordRequired'
     };
   }
 
@@ -137,8 +137,9 @@ exports.SigninService = async (email, password) => {
 
   //If everything ok, send data
   return {
+    statusCode: 200,
     user,
-    accessToken
+    message: accessToken
   };
 };
 
