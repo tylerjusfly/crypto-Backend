@@ -3,7 +3,7 @@ const router = express.Router();
 
 router.get('/', (req, res, next) => {
   try {
-    res.json('hello world');
+    res.json('hello ship backend');
   } catch (error) {
     next(error);
   }

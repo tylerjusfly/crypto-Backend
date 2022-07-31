@@ -1,6 +1,6 @@
 const { paswordReset } = require('../middlewares/token');
 const { sendResetTokenEmail } = require('../nodemailer/nodemailer');
-const { signupService, SigninService, verifyEmail } = require('../services/auth.service');
+const { signupService, SigninService, verifyEmail, ResetPassword } = require('../services/auth.service');
 const AppError = require('../utils/appError');
 
 exports.signupController = async (req, res, next) => {
@@ -47,6 +47,21 @@ exports.forgotPasswordController = async (req, res, next) => {
     const { type, statusCode, message } = await paswordReset(email);
 
     await sendResetTokenEmail(email, message.tokenId);
+
+    res.status(statusCode).json({
+      type,
+      message
+    });
+  } catch (error) {
+    return next(new AppError(error, 400));
+  }
+};
+
+exports.resetPasswordController = async (req, res, next) => {
+  const { token, password, confirmpass } = req.body;
+
+  try {
+    const { type, statusCode, message } = await ResetPassword(token, password, confirmpass);
 
     res.status(statusCode).json({
       type,

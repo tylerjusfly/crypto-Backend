@@ -1,7 +1,9 @@
 const { hashPassword, compareHashPassword } = require('../middlewares/password');
 const { AccessToken, EmailVerifyToken, verifyToken } = require('../middlewares/token');
 const User = require('../models/user.model');
+const Token = require('../models/token.model');
 const { sendVerificationEmail } = require('../nodemailer/nodemailer');
+const tokenTypes = require('../config/tokenTypes');
 
 exports.signupService = async (body) => {
   const { name, username, email, role, wallet } = body;
@@ -171,5 +173,53 @@ exports.verifyEmail = async (verifyEmailToken) => {
     type: 'Sucess',
     statusCode: 200,
     message: 'successfulEmailVerification'
+  };
+};
+
+exports.ResetPassword = async (token, password, confirmPassword) => {
+  if (password !== confirmPassword) {
+    return {
+      type: 'Error',
+      statusCode: 400,
+      message: 'password Does not match'
+    };
+  }
+
+  // else find if token in database
+  const Istoken = await Token.findOne({ tokenId: token });
+
+  if (!Istoken) {
+    return {
+      type: 'Error',
+      statusCode: 404,
+      message: 'Invalid Token'
+    };
+  }
+
+  // if true , get user id , check if user exist
+  const user = await User.findById(Istoken.userId);
+
+  if (!user) {
+    return {
+      type: 'Error',
+      statusCode: 404,
+      message: 'User Not Found'
+    };
+  }
+  // if true , hash users password , and save
+  password = await hashPassword(password);
+
+  user.password = password;
+
+  // save user document
+  await user.save();
+
+  // delete token from database
+  await Token.deleteMany({ userId: user.id, type: tokenTypes.RESET_PASSWORD });
+
+  return {
+    type: 'Success',
+    statusCode: 200,
+    message: 'successfulPasswordChange'
   };
 };
