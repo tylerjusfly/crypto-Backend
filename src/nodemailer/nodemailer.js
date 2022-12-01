@@ -25,7 +25,7 @@ exports.sendVerificationEmail = async (email, token) => {
       subject: 'Verification Email',
       html: `<div> 
       <p> Dear User , </p>
-      <p> To verify your email, click on this link ${link}/verify/${token} </p>
+      <p> To verify your email, click on this link ${link}/auth/verify/${token} </p>
       If you did not create an account, then ignore this email.
       </div>`
     };

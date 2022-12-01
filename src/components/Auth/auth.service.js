@@ -1,9 +1,9 @@
-const { hashPassword, compareHashPassword } = require('../middlewares/password');
-const { AccessToken, EmailVerifyToken, verifyToken } = require('../middlewares/token');
-const User = require('../models/user.model');
-const Token = require('../models/token.model');
-const { sendVerificationEmail } = require('../nodemailer/nodemailer');
-const tokenTypes = require('../config/tokenTypes');
+const { hashPassword, compareHashPassword } = require('../../middlewares/password');
+const { AccessToken, EmailVerifyToken, verifyToken } = require('../../middlewares/token');
+const User = require('../Users/user.model');
+const Token = require('../Tokens/token.model');
+const { sendVerificationEmail } = require('../../nodemailer/nodemailer');
+const tokenTypes = require('../../config/tokenTypes');
 
 exports.signupService = async (body) => {
   const { name, username, email, role, wallet } = body;
@@ -152,6 +152,7 @@ exports.SigninService = async (email, password) => {
  */
 
 exports.verifyEmail = async (verifyEmailToken) => {
+  //@todo , verify email token should not expire
   const userToken = await verifyToken(verifyEmailToken);
 
   const user = await User.findById(userToken.sub);

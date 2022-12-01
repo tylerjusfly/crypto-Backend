@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
-const AppError = require('../utils/appError');
+const AppError = require('../../utils/appError');
 
 const userSchema = new mongoose.Schema(
   {

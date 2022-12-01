@@ -1,0 +1,43 @@
+@hostname = http://localhost:4242
+
+### Send request to homePage
+get {{hostname}}
+
+### Signup
+post {{hostname}}/auth/signup
+Content-Type: application/json
+
+{
+    "name" : "Tyler momoh",
+    "username" : "tylerjusfly",
+    "email" : "tylerjusfly1@gmail.com",
+    "password" : "ladygaga",
+    "role" : "user"
+}
+
+### SignIn Endpoint
+post {{hostname}}/auth/signin
+Content-Type: application/json
+
+{
+    "email" : "tylerjusfly1@gmail.com",
+    "password" : "tylerjusfly"
+}
+
+### Change password
+post {{hostname}}/auth/change-password
+Content-Type: application/json
+
+{
+    "token" : "IHMYV4",
+    "password" : "tylerjusfly",
+    "confirmpass" : "tylerjusfly"
+}
+
+### Forgot password
+post {{hostname}}/auth/forgot-password
+Content-Type: application/json
+
+{
+    "email" : "tylerjusfly1@gmail.com"
+}

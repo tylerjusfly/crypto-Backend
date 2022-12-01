@@ -6,7 +6,7 @@ const {
   emailVerificationController,
   forgotPasswordController,
   resetPasswordController
-} = require('../controllers/auth');
+} = require('../components/Auth/auth.controller');
 
 router.post('/signup', signupController);
 

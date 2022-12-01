@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken');
 const config = require('../config/config');
 const tokenTypes = require('../config/tokenTypes');
-const User = require('../models/user.model');
-const Token = require('../models/token.model');
+const User = require('../components/Users/user.model');
+const Token = require('../components/Tokens/token.model');
 
 /**
  * Parent function for Generating Token

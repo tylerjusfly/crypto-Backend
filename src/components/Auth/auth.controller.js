@@ -1,7 +1,7 @@
-const { paswordReset } = require('../middlewares/token');
-const { sendResetTokenEmail } = require('../nodemailer/nodemailer');
-const { signupService, SigninService, verifyEmail, ResetPassword } = require('../services/auth.service');
-const AppError = require('../utils/appError');
+const { paswordReset } = require('../../middlewares/token');
+const { sendResetTokenEmail } = require('../../nodemailer/nodemailer');
+const { signupService, SigninService, verifyEmail, ResetPassword } = require('./auth.service');
+const AppError = require('../../utils/appError');
 
 exports.signupController = async (req, res, next) => {
   try {
